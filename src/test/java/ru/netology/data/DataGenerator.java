@@ -14,5 +14,17 @@ public class DataGenerator {
             return new RegistrationDto(faker.name().firstName(), faker.lorem().characters(8,16), "active");
         }
 
+        public static RegistrationDto generateInfoEng(String locale) {
+            Faker faker = new Faker(new Locale("eng"));
+            return new RegistrationDto(faker.name().firstName(), faker.lorem().characters(8,16), "active");
+        }
+
+        public static RegistrationDto generateInfoPasswordIsArabicLetters(String locale) {
+            Faker faker = new Faker(new Locale("ru"));
+            return new RegistrationDto(faker.name().firstName(), faker.name().firstName(), "active");
+        }
+
+
+
     }
 }
