@@ -1,21 +1,13 @@
 package ru.netology;
 
 import com.codeborne.selenide.Configuration;
-import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.filter.log.LogDetail;
-import io.restassured.http.ContentType;
-import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import ru.netology.data.DataGenerator;
-import ru.netology.data.DataGeneratorInvalid;
-import ru.netology.data.RegistrationDto;
 
-import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 import static io.restassured.RestAssured.given;
-import static ru.netology.data.DataGenerator.Registration.getRegisteredUser;
 
 public class AuthTest {
 

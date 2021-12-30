@@ -5,9 +5,7 @@ import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Test;
-import ru.netology.data.DataGenerator;
 import ru.netology.data.DataGeneratorInvalid;
-import ru.netology.data.RegistrationDto;
 
 import static io.restassured.RestAssured.given;
 
