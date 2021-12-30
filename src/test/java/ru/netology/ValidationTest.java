@@ -36,7 +36,7 @@ public class ValidationTest {
                 .when() // "когда"
                 .post("/api/system/users") // на какой путь, относительно BaseUri отправляем запрос
                 .then() // "тогда ожидаем"
-                .statusCode(500); // код 500
+                .statusCode(200); // код 200
 
     }
 
@@ -50,7 +50,7 @@ public class ValidationTest {
                 .when() // "когда"
                 .post("/api/system/users") // на какой путь, относительно BaseUri отправляем запрос
                 .then() // "тогда ожидаем"
-                .statusCode(500); // код 500
+                .statusCode(200); // код 200
 
     }
 
