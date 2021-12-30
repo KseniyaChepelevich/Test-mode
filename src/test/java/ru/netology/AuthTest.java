@@ -1,12 +1,14 @@
 package ru.netology;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Configuration;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import ru.netology.data.DataGenerator;
 
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Condition.exactText;
+import static com.codeborne.selenide.Selectors.withText;
+import static com.codeborne.selenide.Selenide.*;
 import static io.restassured.RestAssured.given;
 
 public class AuthTest {
@@ -16,42 +18,7 @@ public class AuthTest {
         open("http://localhost:9999");
     }
 
-//    static RegistrationDto info = DataGenerator.Registration.generateInfo("ru");
-//
-//    static RegistrationDto infoNew = DataGenerator.Registration.generateInfoEng("eng");
-//
-//    static RegistrationDto infoPasswordArabicLetters = DataGenerator.Registration.generateInfoPasswordIsArabicLetters("ru");
-//
-//    private static RequestSpecification requestSpec = new RequestSpecBuilder()
-//            .setBaseUri("http://localhost")
-//            .setPort(9999)
-//            .setAccept(ContentType.JSON)
-//            .setContentType(ContentType.JSON)
-//            .log(LogDetail.ALL)
-//            .build();
 
-//    @BeforeAll
-//    static void setUpAll() {
-//
-//        // сам запрос
-//        given() // "дано"
-//                .spec(requestSpec) // указываем, какую спецификацию используем
-//                .body(new RegistrationDto(info.getLogin(), info.getPassword(), "active")) // передаём в теле объект, который будет преобразован в JSON
-//                .when() // "когда"
-//                .post("/api/system/users") // на какой путь, относительно BaseUri отправляем запрос
-//                .then() // "тогда ожидаем"
-//                .statusCode(200); // код 200 OK
-//    }
-
-//    @Test
-//    public void shouldSendLoginWithStatusActive() {
-//        Configuration.holdBrowserOpen = true;
-//        var registeredUser = getRegisteredUser("active");
-//        DataGenerator.setRequest(registeredUser);
-//        registeredUser.getLogin();
-//        registeredUser.getPassword();
-//        System.out.println();
-//    }
 
 
     @Test
@@ -59,164 +26,63 @@ public class AuthTest {
         Configuration.holdBrowserOpen = true;
         DataGenerator.RegistrationDto registeredUser = DataGenerator.Registration.getRegisteredUser("active");
         DataGenerator.setRequest(registeredUser);
-        $("[data-test-id=\"login\"]").setValue(registeredUser.getLogin());
-        $("[data-test-id=\"password\"]").setValue(registeredUser.getPassword());
+        $("//*[@name='login']").setValue(registeredUser.getLogin());
+        $("//*[@name='password").setValue(registeredUser.getPassword());
         $(".button__content").click();
+        $("[id='root']").shouldBe(exactText("Личный кабинет"));
 
 
 
-        // сам запрос
-//        given() // "дано"
-//                .spec(requestSpec) // указываем, какую спецификацию используем
-//                .body(new RegistrationDto(info.getLogin(), info.getPassword(), "active")) // передаём в теле объект, который будет преобразован в JSON
-//                .when() // "когда"
-//                .post("/api/system/users") // на какой путь, относительно BaseUri отправляем запрос
-//                .then() // "тогда ожидаем"
-//                .statusCode(200); // код 200 OK
 
     }
 
+    @Test
+    public void shouldSendInvalidLogin() {
+        Configuration.holdBrowserOpen = true;
+        DataGenerator.RegistrationDto registeredUser = DataGenerator.Registration.getRegisteredUser("active");
+        DataGenerator.setRequest(registeredUser);
+        var invalidLogin = DataGenerator.getRandomLogin();
+        $x("//*[@name='login']").setValue(invalidLogin);
+        $x("//*[@name='password").setValue(registeredUser.getPassword());
+        $(".button__content").click();
+        $("[data-test-id=\"error-notification\"]").shouldBe(exactText("Ошибка! Неверно Неверно указан логин или пароль"));
 
-//    @Test
-//    public void shouldSendCompletedFormIfLoginWithLatinLetters() {
-//
-//        // сам запрос
-//        given() // "дано"
-//                .spec(requestSpec) // указываем, какую спецификацию используем
-//                .body(new RegistrationDto(infoNew.getLogin(), infoNew.getPassword(), infoNew.getStatus())) // передаём в теле объект, который будет преобразован в JSON
-//                .when() // "когда"
-//                .post("/api/system/users") // на какой путь, относительно BaseUri отправляем запрос
-//                .then() // "тогда ожидаем"
-//                .statusCode(200); // код 200
-//
-//    }
-//
-//    @Test
-//    public void shouldSendCompletedFormIfLoginWithALeadingSpace() {
-//
-//        // сам запрос
-//        given() // "дано"
-//                .spec(requestSpec) // указываем, какую спецификацию используем
-//                .body(new RegistrationDto(" " + info.getLogin(), info.getPassword(), info.getStatus())) // передаём в теле объект, который будет преобразован в JSON
-//                .when() // "когда"
-//                .post("/api/system/users") // на какой путь, относительно BaseUri отправляем запрос
-//                .then() // "тогда ожидаем"
-//                .statusCode(200); // код 200
-//
-//    }
-//
-//    @Test
-//    public void shouldSendCompletedFormIfPasswordWithALeadingSpace() {
-//
-//        // сам запрос
-//        given() // "дано"
-//                .spec(requestSpec) // указываем, какую спецификацию используем
-//                .body(new RegistrationDto(info.getLogin(), " " + info.getPassword(), info.getStatus())) // передаём в теле объект, который будет преобразован в JSON
-//                .when() // "когда"
-//                .post("/api/system/users") // на какой путь, относительно BaseUri отправляем запрос
-//                .then() // "тогда ожидаем"
-//                .statusCode(200); // код 200
-//
-//    }
-//
-//    @Test
-//    public void shouldSendCompletedFormPassiveUser() {
-//
-//        // сам запрос
-//        given() // "дано"
-//                .spec(requestSpec) // указываем, какую спецификацию используем
-//                .body(new RegistrationDto(info.getLogin(), info.getPassword(), "passive")) // передаём в теле объект, который будет преобразован в JSON
-//                .when() // "когда"
-//                .post("/api/system/users") // на какой путь, относительно BaseUri отправляем запрос
-//                .then() // "тогда ожидаем"
-//                .statusCode(500); // код 500
-//
-//    }
-//
-//    @Test
-//    public void shouldSendCompletedFormWithoutStatus() {
-//
-//        // сам запрос
-//        given() // "дано"
-//                .spec(requestSpec) // указываем, какую спецификацию используем
-//                .body(new RegistrationDto(info.getLogin(), info.getPassword(), "")) // передаём в теле объект, который будет преобразован в JSON
-//                .when() // "когда"
-//                .post("/api/system/users") // на какой путь, относительно BaseUri отправляем запрос
-//                .then() // "тогда ожидаем"
-//                .statusCode(500); // код 500
-//
-//    }
-//
-//    @Test
-//    public void shouldSendIfPasswordFieldIsEmptyAndStatusPassive() {
-//
-//        // сам запрос
-//        given() // "дано"
-//                .spec(requestSpec) // указываем, какую спецификацию используем
-//                .body(new RegistrationDto(info.getLogin(), "", "passive")) // передаём в теле объект, который будет преобразован в JSON
-//                .when() // "когда"
-//                .post("/api/system/users") // на какой путь, относительно BaseUri отправляем запрос
-//                .then() // "тогда ожидаем"
-//                .statusCode(500); // код 500
-//
-//    }
-//
-//    @Test
-//    public void shouldSendIfLoginFieldIsEmptyAndStatusPassive() {
-//
-//        // сам запрос
-//        given() // "дано"
-//                .spec(requestSpec) // указываем, какую спецификацию используем
-//                .body(new RegistrationDto("", info.getPassword(), "passive")) // передаём в теле объект, который будет преобразован в JSON
-//                .when() // "когда"
-//                .post("/api/system/users") // на какой путь, относительно BaseUri отправляем запрос
-//                .then() // "тогда ожидаем"
-//                .statusCode(500); // код 500
-//
-//    }
-//
-//    @Test
-//    public void shouldSendIfLoginFieldIsEmpty() {
-//
-//        // сам запрос
-//        given() // "дано"
-//                .spec(requestSpec) // указываем, какую спецификацию используем
-//                .body(new RegistrationDto("", info.getPassword(), "active")) // передаём в теле объект, который будет преобразован в JSON
-//                .when() // "когда"
-//                .post("/api/system/users") // на какой путь, относительно BaseUri отправляем запрос
-//                .then() // "тогда ожидаем"
-//                .statusCode(500); // код 500
-//
-//    }
-//
-//
-//    @Test
-//    public void shouldSendIfPasswordFieldIsEmptyAndStatusActive() {
-//
-//        // сам запрос
-//        given() // "дано"
-//                .spec(requestSpec) // указываем, какую спецификацию используем
-//                .body(new RegistrationDto(info.getLogin(), "", "active")) // передаём в теле объект, который будет преобразован в JSON
-//                .when() // "когда"
-//                .post("/api/system/users") // на какой путь, относительно BaseUri отправляем запрос
-//                .then() // "тогда ожидаем"
-//                .statusCode(500); // код 500
-//
-//    }
-//
-//    @Test
-//    public void shouldSendCompletedFormIfPasswordIsSmall() {
-//
-//        // сам запрос
-//        given() // "дано"
-//                .spec(requestSpec) // указываем, какую спецификацию используем
-//                .body(new RegistrationDto(infoPasswordArabicLetters.getLogin(), infoPasswordArabicLetters.getPassword(), infoPasswordArabicLetters.getStatus())) // передаём в теле объект, который будет преобразован в JSON
-//                .when() // "когда"
-//                .post("/api/system/users") // на какой путь, относительно BaseUri отправляем запрос
-//                .then() // "тогда ожидаем"
-//                .statusCode(200); // код 200
-//
-//    }
+
+
+
+    }
+
+    @Test
+    public void shouldSendBlockedUser() {
+        Configuration.holdBrowserOpen = true;
+        DataGenerator.RegistrationDto registeredUser = DataGenerator.Registration.getRegisteredUser("blocked");
+        DataGenerator.setRequest(registeredUser);
+        $x("//*[@name='login']").setValue(registeredUser.getLogin());
+        $x("//*[@name='password").setValue(registeredUser.getPassword());
+        $(".button__content").click();
+        $(withText("Пользователь заблокирован")).shouldBe(Condition.visible);
+
+
+
+
+    }
+
+    @Test
+    public void shouldSendInvalidPassword() {
+        Configuration.holdBrowserOpen = true;
+        DataGenerator.RegistrationDto registeredUser = DataGenerator.Registration.getRegisteredUser("blocked");
+        DataGenerator.setRequest(registeredUser);
+        var invalidPassword = DataGenerator.getRandomPassword();
+        $x("//*[@name='login']").setValue(invalidPassword);
+        $x("//*[@name='password").setValue(registeredUser.getPassword());
+        $(".button__content").click();
+        $("[data-test-id=\"error-notification\"]").shouldHave(exactText("Ошибка! Неверно Неверно указан логин или пароль"));
+
+
+
+
+    }
+
 
 
 }
