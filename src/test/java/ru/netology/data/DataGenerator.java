@@ -12,9 +12,11 @@ import lombok.Value;
 import java.util.Locale;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
+
 
 public class DataGenerator {
+
+
     private static RequestSpecification requestSpec = new RequestSpecBuilder()
             .setBaseUri("http://localhost")
             .setPort(9999)
@@ -25,22 +27,19 @@ public class DataGenerator {
     private static final Faker faker = new Faker(new Locale("en"));
 
 
-    //static RegistrationDto info = DataGenerator.Registration.generateInfo("ru");
-
-    private DataGenerator(){
+    private DataGenerator() {
 
     }
 
     public static void setRequest(RegistrationDto user) {
         given() // "дано"
                 .spec(requestSpec) // указываем, какую спецификацию используем
-                .body(new Gson().toJson(user)); // передаём в теле объект, который будет преобразован в JSON
-        when() // "когда"
+                .body(user) // передаём в теле объект, который будет преобразован в JSON
+                .when() // "когда"
                 .post("/api/system/users") // на какой путь, относительно BaseUri отправляем запрос
-        .then() // "тогда ожидаем"
+                .then() // "тогда ожидаем"
                 .statusCode(200); // код 200 OK
     }
-
 
 
     public static String getRandomLogin() {
@@ -55,12 +54,12 @@ public class DataGenerator {
         return password;
     }
 
-    public static  class Registration {
+    public static class Registration {
         private Registration() {
         }
 
         public static RegistrationDto getUser(String status) {
-            RegistrationDto user = new RegistrationDto(getRandomLogin(),getRandomPassword(), status);
+            RegistrationDto user = new RegistrationDto(getRandomLogin(), getRandomPassword(), status);
 
             return user;
         }
@@ -71,7 +70,6 @@ public class DataGenerator {
             return registeredUser;
         }
 
-        
 
     }
 
@@ -83,24 +81,5 @@ public class DataGenerator {
         String status;
     }
 
-//    @UtilityClass
-//    public static class Registration {
-//        public static RegistrationDto generateInfo(String locale) {
-//            Faker faker = new Faker(new Locale("ru"));
-//            return new RegistrationDto(faker.name().firstName(), faker.lorem().characters(8,16), "active");
-//        }
-//
-//        public static RegistrationDto generateInfoEng(String locale) {
-//            Faker faker = new Faker(new Locale("eng"));
-//            return new RegistrationDto(faker.name().firstName(), faker.lorem().characters(8,16), "active");
-//        }
-//
-//        public static RegistrationDto generateInfoPasswordIsArabicLetters(String locale) {
-//            Faker faker = new Faker(new Locale("ru"));
-//            return new RegistrationDto(faker.name().firstName(), faker.name().firstName(), "active");
-//        }
-//
-//
-//
-//    }
+
 }

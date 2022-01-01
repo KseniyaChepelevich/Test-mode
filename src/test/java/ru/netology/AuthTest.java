@@ -2,87 +2,78 @@ package ru.netology;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Configuration;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.netology.data.DataGenerator;
 
 import static com.codeborne.selenide.Condition.exactText;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.withText;
 import static com.codeborne.selenide.Selenide.*;
 import static io.restassured.RestAssured.given;
 
 public class AuthTest {
 
-    @BeforeAll
-    static void setup() {
+    @BeforeEach
+    void setup() {
         open("http://localhost:9999");
     }
 
-
+    @AfterEach
+    void tearDown() {
+        closeWindow();
+    }
 
 
     @Test
     public void shouldSendSuccessfulyLoginWithStatusActive() {
-        Configuration.holdBrowserOpen = true;
-        DataGenerator.RegistrationDto registeredUser = DataGenerator.Registration.getRegisteredUser("active");
-        DataGenerator.setRequest(registeredUser);
-        $("//*[@name='login']").setValue(registeredUser.getLogin());
-        $("//*[@name='password").setValue(registeredUser.getPassword());
-        $(".button__content").click();
-        $("[id='root']").shouldBe(exactText("Личный кабинет"));
 
-
-
-
+        var registeredUser = DataGenerator.Registration.getRegisteredUser("active");
+        $("[data-test-id='login'] input").setValue(registeredUser.getLogin());
+        $("[data-test-id='password'] input").setValue(registeredUser.getPassword());
+        $("[data-test-id='action-login']").click();
+        $("h2").shouldBe(visible).shouldHave(exactText("Личный кабинет"));
     }
 
     @Test
     public void shouldSendInvalidLogin() {
-        Configuration.holdBrowserOpen = true;
-        DataGenerator.RegistrationDto registeredUser = DataGenerator.Registration.getRegisteredUser("active");
-        DataGenerator.setRequest(registeredUser);
+
+        var registeredUser = DataGenerator.Registration.getRegisteredUser("active");
         var invalidLogin = DataGenerator.getRandomLogin();
-        $x("//*[@name='login']").setValue(invalidLogin);
-        $x("//*[@name='password").setValue(registeredUser.getPassword());
-        $(".button__content").click();
-        $("[data-test-id=\"error-notification\"]").shouldBe(exactText("Ошибка! Неверно Неверно указан логин или пароль"));
-
-
+        $("[data-test-id='login'] input").setValue(invalidLogin);
+        $("[data-test-id='password'] input").setValue(registeredUser.getPassword());
+        $("[data-test-id='action-login']").click();
+        $("[data-test-id='error-notification']").shouldBe(visible).shouldHave(exactText("Ошибка Ошибка! Неверно указан логин или пароль"));
 
 
     }
 
     @Test
     public void shouldSendBlockedUser() {
-        Configuration.holdBrowserOpen = true;
-        DataGenerator.RegistrationDto registeredUser = DataGenerator.Registration.getRegisteredUser("blocked");
-        DataGenerator.setRequest(registeredUser);
-        $x("//*[@name='login']").setValue(registeredUser.getLogin());
-        $x("//*[@name='password").setValue(registeredUser.getPassword());
-        $(".button__content").click();
+
+        var registeredUser = DataGenerator.Registration.getRegisteredUser("blocked");
+        $("[data-test-id='login'] input").setValue(registeredUser.getLogin());
+        $("[data-test-id='password'] input").setValue(registeredUser.getPassword());
+        $("[data-test-id='action-login']").click();
         $(withText("Пользователь заблокирован")).shouldBe(Condition.visible);
-
-
 
 
     }
 
     @Test
     public void shouldSendInvalidPassword() {
-        Configuration.holdBrowserOpen = true;
-        DataGenerator.RegistrationDto registeredUser = DataGenerator.Registration.getRegisteredUser("blocked");
-        DataGenerator.setRequest(registeredUser);
+
+        var registeredUser = DataGenerator.Registration.getRegisteredUser("active");
         var invalidPassword = DataGenerator.getRandomPassword();
-        $x("//*[@name='login']").setValue(invalidPassword);
-        $x("//*[@name='password").setValue(registeredUser.getPassword());
-        $(".button__content").click();
-        $("[data-test-id=\"error-notification\"]").shouldHave(exactText("Ошибка! Неверно Неверно указан логин или пароль"));
-
-
+        $("[data-test-id='login'] input").setValue(invalidPassword);
+        $("[data-test-id='password'] input").setValue(registeredUser.getPassword());
+        $("[data-test-id='action-login']").click();
+        $("[data-test-id='error-notification']").shouldBe(visible).shouldHave(exactText("Ошибка Ошибка! Неверно указан логин или пароль"));
 
 
     }
-
 
 
 }
