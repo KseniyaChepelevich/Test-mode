@@ -21,14 +21,11 @@ public class AuthTest {
         open("http://localhost:9999");
     }
 
-    @AfterEach
-    void tearDown() {
-        closeWindow();
-    }
+
 
 
     @Test
-    public void shouldSendSuccessfulyLoginWithStatusActive() {
+    public void shouldSendSuccessfulyLoginIfRegisteredActiveUser() {
 
         var registeredUser = DataGenerator.Registration.getRegisteredUser("active");
         $("[data-test-id='login'] input").setValue(registeredUser.getLogin());
@@ -38,7 +35,7 @@ public class AuthTest {
     }
 
     @Test
-    public void shouldSendInvalidLogin() {
+    public void shouldGetErrorIfInvalidLogin() {
 
         var registeredUser = DataGenerator.Registration.getRegisteredUser("active");
         var invalidLogin = DataGenerator.getRandomLogin();
@@ -51,7 +48,7 @@ public class AuthTest {
     }
 
     @Test
-    public void shouldSendBlockedUser() {
+    public void shouldGetErrorIfBlockedUser() {
 
         var registeredUser = DataGenerator.Registration.getRegisteredUser("blocked");
         $("[data-test-id='login'] input").setValue(registeredUser.getLogin());
@@ -63,12 +60,24 @@ public class AuthTest {
     }
 
     @Test
-    public void shouldSendInvalidPassword() {
+    public void shouldGetErrorIfInvalidPassword() {
 
         var registeredUser = DataGenerator.Registration.getRegisteredUser("active");
         var invalidPassword = DataGenerator.getRandomPassword();
         $("[data-test-id='login'] input").setValue(invalidPassword);
         $("[data-test-id='password'] input").setValue(registeredUser.getPassword());
+        $("[data-test-id='action-login']").click();
+        $("[data-test-id='error-notification']").shouldBe(visible).shouldHave(exactText("Ошибка Ошибка! Неверно указан логин или пароль"));
+
+
+    }
+
+    @Test
+    public void shouldGetErrorIfNotRegisteredUser() {
+
+        var notRegisteredUser = DataGenerator.Registration.getUser("active");
+        $("[data-test-id='login'] input").setValue(notRegisteredUser.getLogin());
+        $("[data-test-id='password'] input").setValue(notRegisteredUser.getPassword());
         $("[data-test-id='action-login']").click();
         $("[data-test-id='error-notification']").shouldBe(visible).shouldHave(exactText("Ошибка Ошибка! Неверно указан логин или пароль"));
 
