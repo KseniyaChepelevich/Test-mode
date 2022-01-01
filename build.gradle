@@ -3,6 +3,7 @@ plugins {
     id "io.freefair.lombok" version "6.3.0"
 }
 
+
 group 'ru.netology'
 version '1.0-SNAPSHOT'
 
